@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package faturamento;
+option java_multiple_files = true;
+option java_package = "com.marcel.grpc";
+option java_outer_classname = "FaturamentoProto";
+
+service FaturamentoService {
+  rpc makeFaturamento(FaturamentoRequest) returns (FaturamentoResponse);
+  rpc getFaturamento(FaturamentoXmlRequest) returns (FaturamentoXmlResponse);
+}
+
+message FaturamentoRequest {
+  int32 id_compra = 1;
+  string origem_compra = 2;
+  string cliente = 3;
+  int32 cliente_id = 4;
+  double valor_total = 5;
+  repeated Produto produtos = 6;
+}
+
+message Produto {
+  int32 produto_id = 1;
+  string descricao = 2;
+  int32 quantidade = 3;
+  double valor_unitario = 4;
+  double valor_total = 5;
+}
+
+message FaturamentoXmlRequest {
+  string codigo_nf = 1;
+  string origem_compra = 2;
+}
+
+message FaturamentoResponse {
+  bool sucesso = 1;
+  string mensagem = 2;
+  string codigo_nf = 3;
+  string xml_nf = 4;
+  bytes arquivo_xml = 5;
+}
+
+message FaturamentoXmlResponse {
+  bool encontrado = 1;
+  string mensagem = 2;
+  ObjetoNFGet objeto_nf_get = 3;
+}
+
+message ObjetoNFGet {
+  bytes arquivo_xml = 1;
+  string xml_nf = 2;
+  string codigo_nf = 3;
+}

@@ -1,0 +1,4 @@
+grpc:
+  server:
+    port: 6565
+    enable-reflection: true
