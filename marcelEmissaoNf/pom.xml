@@ -11,7 +11,7 @@
 	<groupId>com.javatechie</groupId>
 	<artifactId>emissao-nota-fiscal</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>stock-trading-server</name>
+	<name>emissao-nf</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
