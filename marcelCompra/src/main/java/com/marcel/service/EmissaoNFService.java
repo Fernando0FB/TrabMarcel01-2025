@@ -21,6 +21,7 @@ public class EmissaoNFService {
     }
 
     public FaturamentoXmlResponse consultarNF(String codigoNf) {
+        System.out.println("Método 'consultarNF' emite uma requisição via gRPC com código, para buscar a NF: " + codigoNf);
         FaturamentoXmlRequest request = FaturamentoXmlRequest.newBuilder()
                 .setCodigoNf(codigoNf)
                 .setOrigemCompra("sistema_compras")
@@ -32,13 +33,14 @@ public class EmissaoNFService {
 
         FaturamentoServiceGrpc.FaturamentoServiceBlockingStub stub = FaturamentoServiceGrpc.newBlockingStub(channel);
         FaturamentoXmlResponse response = stub.getFaturamento(request);
-
+        System.out.println("Resposta recebida via gRPC: " + response);
         channel.shutdown();
 
         return response;
     }
 
     public FaturamentoResponse emitirNF(Compra compra) {
+        System.out.println("Método 'emitirNF' emite uma requisição via gRPC para gerar a NF para a compra: " + compra.getId());
         FaturamentoRequest request = createFaturamentoRequestDTO(compra);
 
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 6565)
@@ -47,13 +49,14 @@ public class EmissaoNFService {
 
         FaturamentoServiceGrpc.FaturamentoServiceBlockingStub stub = FaturamentoServiceGrpc.newBlockingStub(channel);
         FaturamentoResponse response = stub.makeFaturamento(request);
-
+        System.out.println("Resposta recebida via gRPC: " + response);
         channel.shutdown();
 
         return response;
     }
 
     public FaturamentoRequest createFaturamentoRequestDTO(Compra compra) {
+        System.out.println("Criando FaturamentoRequest para a compra: " + compra.getId());
         List<ProdutoCompraResponse> produtosCompra = produtoCompraService.findByCompraId(compra.getId());
 
         List<Produto> produtos = produtosCompra.stream()

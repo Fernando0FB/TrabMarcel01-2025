@@ -75,18 +75,21 @@ public class CompraService {
     }
 
     public byte[] getNotaFiscal(Long idCompra) {
+        System.out.println("--------- Iniciando busca getNotafiscal ---------");
         Compra compra = compraRepository.findById(idCompra)
                 .orElseThrow(() -> new RuntimeException("Compra não encontrada: " + idCompra));
-
+        System.out.println("Obtendo nota fiscal para a compra: " + compra.getId() + "...");
         if (compra.getCodigoNotaFiscal() == null) {
+            System.out.println("Nota fiscal ainda não emitida, uma emitindo nova nota fiscal...");
             FaturamentoResponse infosNotaFiscal = emissaoNFService.emitirNF(compra);
             compra.setCodigoNotaFiscal(infosNotaFiscal.getCodigoNf());
             save(compra);
 
             return infosNotaFiscal.getArquivoXml().toByteArray();
         }
-
+        System.out.println("Nota fiscal já emitida anteriormente, obtendo informações da nota fiscal...");
         FaturamentoXmlResponse infosNotaFiscal = emissaoNFService.consultarNF(compra.getCodigoNotaFiscal());
+        System.out.println("--------- Fechando busca getNotafiscal ---------");
 
         return infosNotaFiscal.getObjetoNfGet().getArquivoXml().toByteArray();
     }

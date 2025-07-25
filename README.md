@@ -54,7 +54,8 @@ docker run --name trabalhomarcel_nf -e POSTGRES_USER=postgres -e POSTGRES_PASSWO
 
 - No root dos arquivos, siga os comandos abaixo:
 ```
-- cd frontend
+- cd Front
+- cd my-app
 - npm install
 - npm run dev
 ```

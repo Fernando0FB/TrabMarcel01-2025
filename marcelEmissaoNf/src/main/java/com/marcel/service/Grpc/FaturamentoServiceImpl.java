@@ -26,6 +26,7 @@ public class FaturamentoServiceImpl extends FaturamentoServiceGrpc.FaturamentoSe
     @Override
     public void makeFaturamento(FaturamentoRequest request,
                               StreamObserver<FaturamentoResponse> responseObserver) {
+        System.out.println("----------------- Recebendo requisição de criação de NF... ---------------");
         NotaFiscal notaFiscal = FaturamentoMapper.toEntity(request);
         String xmlNotaFiscal = notaFiscalXmlGenerator.gerarXmlNotaFiscal(notaFiscal);
         notaFiscal.setXml_nf(xmlNotaFiscal);
@@ -33,13 +34,6 @@ public class FaturamentoServiceImpl extends FaturamentoServiceGrpc.FaturamentoSe
 
         notaFiscalService.save(notaFiscal);
 
-
-        /*TODO tirar isso aqui:
-        try {
-            notaFiscalXmlGenerator.salvarEmDisco(notaFiscal, "C:\\Users\\Ferna\\Desktop\\nota_fiscal.xml");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
 
         FaturamentoResponse response = FaturamentoResponse.newBuilder()
                 .setSucesso(true)
@@ -49,6 +43,8 @@ public class FaturamentoServiceImpl extends FaturamentoServiceGrpc.FaturamentoSe
                 .setArquivoXml(ByteString.copyFrom(notaFiscal.getArquivoXml()))
                 .build();
 
+        System.out.println("NF criada com sucesso, resposta a ser enviada: " + response);
+        System.out.println("------------------ Fim da requisição de criação de NF ---------------");
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
@@ -56,13 +52,16 @@ public class FaturamentoServiceImpl extends FaturamentoServiceGrpc.FaturamentoSe
     @Override
     public void getFaturamento(FaturamentoXmlRequest request,
                                StreamObserver<FaturamentoXmlResponse> responseObserver) {
+        System.out.println("------------------------Recebendo requisição de consulta de NF...------------------------");
         String codigoNf = request.getCodigoNf();
         String origemCompra = request.getOrigemCompra();
 
         Optional<NotaFiscal> notaFiscal = notaFiscalService.findByCodigoNFAndOrigemCompra(codigoNf, origemCompra);
 
         FaturamentoXmlResponse response = FaturamentoMapper.toXmlResponse(notaFiscal);
+        System.out.println("NF encontrado com sucesso, resposta a ser enviada: " + response);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+        System.out.println("------------------------Fim da requisição de consulta de NF------------------------");
     }
 }
